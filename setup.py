@@ -7,7 +7,14 @@ setup(
     author="Damien SIX <damien@robotsix.net>",
     license="MIT",
     packages=find_packages(include=["pyarbor"]),
-    install_requires=["tree-sitter", "click", "tree-sitter-python"],
+    install_requires=[
+        "tree-sitter==0.24.0",
+        "click",
+        "tree-sitter-python",
+        "tree-sitter-c==0.23.4",
+        "tree-sitter-cpp==0.23.4",
+        "tree-sitter-markdown==0.3.2",
+    ],
     entry_points={"console_scripts": ["pyarbor=pyarbor.cli:main"]},
     include_package_data=True,
 )
