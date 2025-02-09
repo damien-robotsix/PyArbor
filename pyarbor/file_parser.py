@@ -6,8 +6,17 @@ class FileParser:
     """Parses file content using Tree-sitter."""
 
     def __init__(self):
-        # TODO: Initialize parsers for common languages
+        # Initialize parsers for Python
         self.parsers = {}
+        PY_LANGUAGE_PATH = "path/to/tree-sitter-python"
+        Language.build_library(
+            'build/my-languages.so',
+            [PY_LANGUAGE_PATH]
+        )
+        PY_LANGUAGE = Language('build/my-languages.so', 'python')
+
+        self.parsers['py'] = Parser()
+        self.parsers['py'].set_language(PY_LANGUAGE)
 
     def parse_file(self, file_path: Path) -> dict:
         """Parse the file content based on its type."""
