@@ -1,0 +1,23 @@
+services:
+  dev:
+    image: docker.robotsix.net/dev-docker:latest
+    container_name: robotsix-dev-pyarbor
+    tty: true
+    stdin_open: true
+    environment:
+      - TERM=xterm-256color
+      - TZ=Europe/Paris
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+    network_mode: host
+    volumes:
+      - ~/.config/github-copilot:/home/robotsix-docker/.config/github-copilot:ro
+      - .:/home/robotsix-docker/pyarbor
+      - ~/.gitconfig:/home/robotsix-docker/.gitconfig:ro
+      - ./project.yml:/home/robotsix-docker/.tmuxinator/project.yml:ro
+      - ~/.ssh:/home/robotsix-docker/.ssh:ro
+      - /dev/snd:/dev/snd
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    entrypoint: ["/bin/zsh", "-c", "tmuxinator start project"]
+    pull_policy: always
+
