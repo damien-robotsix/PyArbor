@@ -19,5 +19,4 @@ services:
       - /dev/snd:/dev/snd
       - /tmp/.X11-unix:/tmp/.X11-unix
     entrypoint: ["/bin/zsh", "-c", "tmuxinator start project"]
-    pull_policy: always
 

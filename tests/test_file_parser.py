@@ -1,6 +1,5 @@
-import pytest
 from pyarbor.file_parser import FileParser
-from pathlib import Path
+
 
 def test_parse_python_file(tmp_path):
     # Create a mock Python file
@@ -10,5 +9,7 @@ def test_parse_python_file(tmp_path):
     parser = FileParser()
     result = parser.parse_file(python_file)
 
+    result = result["children"][0]
     assert "function_definition" in result["type"].lower()
     assert "hello" in result["text"].lower()
+
