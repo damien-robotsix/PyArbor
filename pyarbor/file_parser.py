@@ -4,8 +4,8 @@ import tree_sitter_python
 import tree_sitter_c
 import tree_sitter_cpp
 import tree_sitter_markdown
-import json
-import yaml
+import tree_sitter_json
+import tree_sitter_yaml
 
 
 class FileParser:
@@ -17,6 +17,8 @@ class FileParser:
         C_LANGUAGE = Language(tree_sitter_c.language())
         CPP_LANGUAGE = Language(tree_sitter_cpp.language())
         MD_LANGUAGE = Language(tree_sitter_markdown.language())
+        JSON_LANGUAGE = Language(tree_sitter_json.language())
+        YAML_LANGUAGE = Language(tree_sitter_yaml.language())
         self.parsers = {
             "py": Parser(PY_LANGUAGE),
             "c": Parser(C_LANGUAGE),
@@ -24,6 +26,9 @@ class FileParser:
             "hpp": Parser(CPP_LANGUAGE),
             "cpp": Parser(CPP_LANGUAGE),
             "md": Parser(MD_LANGUAGE),
+            "json": Parser(JSON_LANGUAGE),
+            "yaml": Parser(YAML_LANGUAGE),
+            "yml": Parser(YAML_LANGUAGE),
         }
 
     def parse_file(self, file_path: Path) -> dict:
@@ -42,14 +47,6 @@ class FileParser:
             except Exception as e:
                 return {"error": str(e)}
 
-        elif ext == "json":
-            # JSON parsing
-            return self._parse_json(file_path)
-
-        elif ext == "yaml":
-            # YAML parsing
-            return self._parse_yaml(file_path)
-
         elif ext == "txt":
             # Plain text parsing
             return self._parse_text(file_path)
@@ -64,22 +61,6 @@ class FileParser:
             "text": code[node.start_byte : node.end_byte],
             "children": [self._parse_tree(child, code) for child in node.children],
         }
-
-    def _parse_json(self, file_path: Path) -> dict:
-        """Parse JSON files."""
-        try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception as e:
-            return {"error": str(e)}
-
-    def _parse_yaml(self, file_path: Path) -> dict:
-        """Parse YAML files."""
-        try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                return yaml.safe_load(f)
-        except Exception as e:
-            return {"error": str(e)}
 
     def _parse_text(self, file_path: Path) -> dict:
         """Process plain text files."""

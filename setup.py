@@ -14,6 +14,8 @@ setup(
         "tree-sitter-c==0.23.4",
         "tree-sitter-cpp==0.23.4",
         "tree-sitter-markdown==0.3.2",
+        "tree-sitter-json",
+        "tree-sitter-yaml",
     ],
     entry_points={"console_scripts": ["pyarbor=pyarbor.cli:main"]},
     include_package_data=True,
