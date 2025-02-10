@@ -20,6 +20,8 @@ class FileParser:
         self.parsers = {
             "py": Parser(PY_LANGUAGE),
             "c": Parser(C_LANGUAGE),
+            "h": Parser(CPP_LANGUAGE),
+            "hpp": Parser(CPP_LANGUAGE),
             "cpp": Parser(CPP_LANGUAGE),
             "md": Parser(MD_LANGUAGE),
         }
