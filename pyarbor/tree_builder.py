@@ -26,6 +26,7 @@ class DirectoryTreeBuilder:
             for child in sorted(path.iterdir()):
                 node["children"].append(self._build_node(child))
         else:
-            node["content"] = self.file_parser.parse_file(path)
+            node.update(self.file_parser.parse_file(path))
 
         return node
+
