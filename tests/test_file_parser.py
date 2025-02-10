@@ -50,3 +50,73 @@ def test_parse_md_file(tmp_path):
     # Verify the parsed content
     assert "Title" in result["text"]
     assert "This is a test." in result["text"]
+
+
+def test_parse_c_file(tmp_path):
+    # Create a mock C file
+    c_file = tmp_path / "example.c"
+    c_file.write_text(
+        """
+        #include <stdio.h>
+
+        void greet() {
+            printf("Hello, World!");
+        }
+
+        int main() {
+            greet();
+            return 0;
+        }
+        """
+    )
+
+    parser = FileParser()
+    result = parser.parse_file(c_file)
+
+    # Verify the parsed content
+    functions = [
+        child
+        for child in result["children"]
+        if "function_definition" in child["type"].lower()
+    ]
+    function_declarators = [function["children"][1]["text"] for function in functions]
+
+    assert "greet()" in function_declarators
+    assert "main()" in function_declarators
+
+
+def test_parse_cpp_file(tmp_path):
+    # Create a mock C++ file
+    cpp_file = tmp_path / "example.cpp"
+    cpp_file.write_text(
+        """
+        #include <iostream>
+        using namespace std;
+
+        class Greeter {
+        public:
+            void greet() {
+                cout << "Hello, World!" << endl;
+            }
+        };
+
+        int main() {
+            Greeter g;
+            g.greet();
+            return 0;
+        }
+        """
+    )
+
+    parser = FileParser()
+    result = parser.parse_file(cpp_file)
+
+    # Verify the parsed content
+    functions = [
+        child
+        for child in result["children"]
+        if "function_definition" in child["type"].lower()
+    ]
+    function_declarators = [function["children"][1]["text"] for function in functions]
+
+    assert "main()" in function_declarators

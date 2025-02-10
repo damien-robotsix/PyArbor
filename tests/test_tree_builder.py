@@ -10,8 +10,6 @@ def test_directory_tree_structure(tmp_path):
     builder = DirectoryTreeBuilder(tmp_path)
     tree = builder.build_tree()
 
-    print(tree)
-
     assert tree["type"] == "directory"
     assert len(tree["children"]) == 2
     assert any(child["name"] == "dir1" for child in tree["children"])
