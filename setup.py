@@ -9,7 +9,6 @@ setup(
     packages=find_packages(include=["pyarbor"]),
     install_requires=[
         "tree-sitter==0.24.0",
-        "click",
         "tree-sitter-python",
         "tree-sitter-c==0.23.4",
         "tree-sitter-cpp==0.23.4",
@@ -17,6 +16,5 @@ setup(
         "tree-sitter-json",
         "tree-sitter-yaml",
     ],
-    entry_points={"console_scripts": ["pyarbor=pyarbor.cli:main"]},
     include_package_data=True,
 )

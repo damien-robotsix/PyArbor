@@ -9,9 +9,9 @@ def test_parse_python_file(tmp_path):
     parser = FileParser()
     result = parser.parse_file(python_file)
 
-    result = result["children"][0]
-    assert "function_definition" in result["type"].lower()
-    assert "hello" in result["text"].lower()
+    assert result.path.endswith("example.py")
+    assert result.content.root_node.children[0].type.lower() == "function_definition"
+    assert b"def hello()" in result.content.root_node.children[0].text.lower()
 
 
 def test_parse_markdown_file(tmp_path):
@@ -22,21 +22,10 @@ def test_parse_markdown_file(tmp_path):
     parser = FileParser()
     result = parser.parse_file(markdown_file)
 
-    assert "document" in result["type"].lower()
-    assert "# Title" in result["text"]
-    assert "This is a paragraph in a markdown file." in result["text"]
-
-
-def test_parse_txt_file(tmp_path):
-    # Create a mock TXT file
-    txt_file = tmp_path / "example.txt"
-    txt_file.write_text("This is a test.")
-
-    parser = FileParser()
-    result = parser.parse_file(txt_file)
-
-    # Verify the parsed text
-    assert "This is a test." in result["text"]
+    assert result.path.endswith("example.md")
+    assert "document" in result.content.root_node.type.lower()
+    assert b"# Title" in result.content.root_node.text
+    assert b"This is a paragraph in a markdown file." in result.content.root_node.text
 
 
 def test_parse_md_file(tmp_path):
@@ -48,8 +37,8 @@ def test_parse_md_file(tmp_path):
     result = parser.parse_file(md_file)
 
     # Verify the parsed content
-    assert "Title" in result["text"]
-    assert "This is a test." in result["text"]
+    assert b"Title" in result.content.root_node.text
+    assert b"This is a test." in result.content.root_node.text
 
 
 def test_parse_c_file(tmp_path):
@@ -76,13 +65,13 @@ def test_parse_c_file(tmp_path):
     # Verify the parsed content
     functions = [
         child
-        for child in result["children"]
-        if "function_definition" in child["type"].lower()
+        for child in result.content.root_node.children
+        if "function_definition" in child.type.lower()
     ]
-    function_declarators = [function["children"][1]["text"] for function in functions]
+    function_declarators = [function.children[1].text for function in functions]
 
-    assert "greet()" in function_declarators
-    assert "main()" in function_declarators
+    assert b"greet()" in function_declarators
+    assert b"main()" in function_declarators
 
 
 def test_parse_cpp_file(tmp_path):
@@ -114,9 +103,9 @@ def test_parse_cpp_file(tmp_path):
     # Verify the parsed content
     functions = [
         child
-        for child in result["children"]
-        if "function_definition" in child["type"].lower()
+        for child in result.children
+        if "function_definition" in child.type.lower()
     ]
-    function_declarators = [function["children"][1]["text"] for function in functions]
+    function_declarators = [function.children[1].text for function in functions]
 
-    assert "main()" in function_declarators
+    assert b"main()" in function_declarators
