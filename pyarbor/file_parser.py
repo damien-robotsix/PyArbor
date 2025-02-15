@@ -58,6 +58,7 @@ class FileParser:
     def __init__(self):
         self.parser = None
 
+    # TODO: parse file with old tree
     def parse_file(self, file_path: Path) -> Optional[FileNode]:
         """Parses a file and returns a FileNode representation."""
         ext = file_path.suffix
@@ -75,7 +76,7 @@ class FileParser:
             tree = self.parser.parse(bytes(file_content, "utf-8"))
             return FileNode(
                 path=str(file_path),
-                modified=file_path.stat().st_mtime,
+                modified=file_path.stat().st_mtime_ns,
                 content=tree,
                 children=tree.root_node.children,
             )

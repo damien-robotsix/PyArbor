@@ -27,7 +27,7 @@ class FileNode(Node):
     """Represents a file node in the tree structure."""
 
     type: str = "file"
-    modified: float = Field(..., title="Last modified timestamp of the file")
+    modified: int = Field(..., title="Last modified timestamp of the file")
     content: str | Tree | None = Field(
         ..., title="Content of the file as a string (not parsed) or Tree-sitter Tree"
     )
