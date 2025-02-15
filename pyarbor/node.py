@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Field, ConfigDict
 from tree_sitter import Tree, Node as TSNode
-from datetime import datetime
 
 
 class Node(BaseModel):
@@ -28,7 +27,7 @@ class FileNode(Node):
     """Represents a file node in the tree structure."""
 
     type: str = "file"
-    modified: datetime = Field(..., title="Last modified timestamp of the file")
+    modified: float = Field(..., title="Last modified timestamp of the file")
     content: str | Tree | None = Field(
         ..., title="Content of the file as a string (not parsed) or Tree-sitter Tree"
     )

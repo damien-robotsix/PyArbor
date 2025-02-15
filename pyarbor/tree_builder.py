@@ -35,6 +35,9 @@ class DirectoryTreeBuilder:
                     with open(path, "r") as f:
                         file_content = f.read()
                 file_node = FileNode(
-                    path=str(path), modified=path.stat().st_mtime, content=file_content
+                    path=str(path),
+                    modified=path.stat().st_mtime,
+                    content=file_content,
+                    children=[],
                 )
             return file_node
