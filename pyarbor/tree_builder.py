@@ -12,7 +12,8 @@ class DirectoryTreeBuilder:
 
     def build_tree(self) -> Node:
         """Recursively builds the directory and file tree."""
-        return self._build_node(self.root)
+        self.root_node = self._build_node(self.root)
+        return self.root_node
 
     def _build_node(self, path: Path) -> Node:
         """Internal method to traverse directories and create nodes."""
@@ -95,3 +96,34 @@ class DirectoryTreeBuilder:
 
         return current_node
 
+    def get_node_by_path(
+        self, path: Path, current_node: Node | None = None
+    ) -> Node | None:
+        """
+        Fetch node for a given file path.
+
+        Args:
+            path (str): The absolute or relative path to the target file.
+            current_node (Node): The current node in the tree to search from
+
+        Returns:
+            Node: The file node for the target file.
+
+        Raises:
+            FileNotFoundError: If the file does not exist in the tree.
+        """
+        if current_node is None:
+            current_node = self.root_node
+
+        if current_node.path == str(path):
+            return current_node
+
+        for child in current_node.children:
+            if child.path == str(path):
+                return child
+            elif child.path in str(path):
+                return self.get_node_by_path(path, child)
+            else:
+                continue
+
+        return None
