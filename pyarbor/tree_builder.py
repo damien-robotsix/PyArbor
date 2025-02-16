@@ -1,4 +1,5 @@
 from pathlib import Path
+from pathspec import PathSpec
 from .file_parser import FileParser
 from .node import Node, DirNode, FileNode
 
@@ -6,23 +7,30 @@ from .node import Node, DirNode, FileNode
 class DirectoryTreeBuilder:
     """Builds a tree structure of directories and optionally parses file contents."""
 
-    def __init__(self, root_path: str):
+    def __init__(self, root_path: str, ignore_patterns: list[str] = []):
         self.root = Path(root_path).resolve()
         self.file_parser = FileParser()
+        self.ignore_spec = PathSpec.from_lines("gitwildmatch", ignore_patterns)
 
     def build_tree(self) -> Node:
         """Recursively builds the directory and file tree."""
         self.root_node = self._build_node(self.root)
         return self.root_node
 
-    def _build_node(self, path: Path) -> Node:
+    def _build_node(self, path: Path) -> Node | None:
         """Internal method to traverse directories and create nodes."""
+
+        # Skip files/directories that match ignore patterns
+        if self.ignore_spec.match_file(str(path)):
+            return None
 
         if path.is_dir():
             # Create a directory node
             dir_node = DirNode(path=str(path), children=[])
             for child in sorted(path.iterdir()):
-                dir_node.children.append(self._build_node(child))
+                child_node = self._build_node(child)
+                if child_node is not None:
+                    dir_node.children.append(child_node)
             return dir_node
         else:
             # Handle files, either parsed or unparsed
@@ -30,10 +38,9 @@ class DirectoryTreeBuilder:
                 file_node = self.file_parser.parse_file(path)
             except Exception:
                 # If parsing fails, create a node for the unparsed file
-                # File content is loaded if file in not a binary
                 file_content = None
                 if path.is_file() and not path.is_symlink() and not path.is_socket():
-                    with open(path, "r") as f:
+                    with open(path, "r", encoding="utf-8", errors="ignore") as f:
                         file_content = f.read()
                 file_node = FileNode(
                     path=str(path),
@@ -124,6 +131,6 @@ class DirectoryTreeBuilder:
             elif child.path in str(path):
                 return self.get_node_by_path(path, child)
             else:
-                continue
+                raise RuntimeError("Should not reach here")
 
         return None

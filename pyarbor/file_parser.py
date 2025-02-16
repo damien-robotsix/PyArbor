@@ -58,14 +58,13 @@ class FileParser:
     def __init__(self):
         self.parser = None
 
-    # TODO: parse file with old tree
     def parse_file(self, file_path: Path) -> Optional[FileNode]:
         """Parses a file and returns a FileNode representation."""
         ext = file_path.suffix
         tree_sitter_lang = LANG_CONFIG.get_language(ext)
 
         if not tree_sitter_lang:
-            return None  # Unsupported language for parsing
+            raise RuntimeError("Parser not available for this file")
 
         self.parser = Parser(tree_sitter_lang)
 

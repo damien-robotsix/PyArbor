@@ -8,6 +8,7 @@ setup(
     license="MIT",
     packages=find_packages(include=["pyarbor"]),
     install_requires=[
+        "pathspec",
         "tree-sitter==0.24.0",
         "tree-sitter-python",
         "tree-sitter-c==0.23.4",
